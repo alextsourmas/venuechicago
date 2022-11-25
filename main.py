@@ -1,16 +1,14 @@
 import pandas as pd
 import numpy as np 
 import streamlit as st
+import gc
 from PIL import Image
 
 #Read in venue data
-nightlife_df= pd.read_csv('data/nightlife.csv', index_col='Unnamed: 0') #To csv 
-restaurants_df= pd.read_csv('data/restaurants.csv', index_col='Unnamed: 0')
-coffee_df= pd.read_csv('data/coffee.csv', index_col='Unnamed: 0')
 
 #Read in nightlife reviews 
-nightlife_reviews = pd.read_csv('data/nightlife_reviews.csv', index_col='Unnamed: 0')
-nightlife_reviews = nightlife_reviews.reset_index(drop=True)
+# nightlife_reviews = pd.read_csv('data/nightlife_reviews.csv', index_col='Unnamed: 0')
+# nightlife_reviews = nightlife_reviews.reset_index(drop=True)
 
 #Read in restaurant reviews 
 # restaurant_reviews_1 = pd.read_csv('data/restaurant_reviews_1.csv', index_col='Unnamed: 0')
@@ -25,20 +23,9 @@ nightlife_reviews = nightlife_reviews.reset_index(drop=True)
 # coffee_reviews = coffee_reviews.reset_index(drop=True)
 
 #Read in cosine similarity dfs
-nightlife_cosine_sim_df = pd.read_csv('data/nightlife_cosine_sim.csv', index_col='id')
-restaurant_cosine_sim_df = pd.read_csv('data/restaurant_cosine_sim.csv', index_col='id')
-coffee_cosine_sim_df = pd.read_csv('data/coffee_cosine_sim.csv', index_col='id')
 
 #Preprocess dataframe
-nightlife_df['name'] = nightlife_df['name'].astype(str)
-nightlife_df['location.address1'] = nightlife_df['location.address1'].astype(str)
-nightlife_df['name_and_location'] = nightlife_df[['name', 'location.address1']].agg(': '.join, axis=1)
-restaurants_df['name'] = restaurants_df['name'].astype(str)
-restaurants_df['location.address1'] = restaurants_df['location.address1'].astype(str)
-restaurants_df['name_and_location'] = restaurants_df[['name', 'location.address1']].agg(': '.join, axis=1)
-coffee_df['name'] = coffee_df['name'].astype(str)
-coffee_df['location.address1'] = coffee_df['location.address1'].astype(str)
-coffee_df['name_and_location'] = coffee_df[['name', 'location.address1']].agg(': '.join, axis=1)
+
 
 
 
@@ -81,6 +68,14 @@ def make_clickable(link):
 
 #If nightlife 
 if venue_type == 'Nightlife': 
+
+    #Edit nightlife df
+    nightlife_df= pd.read_csv('data/nightlife.csv', index_col='Unnamed: 0') #To csv 
+    nightlife_df['name'] = nightlife_df['name'].astype(str)
+    nightlife_df['location.address1'] = nightlife_df['location.address1'].astype(str)
+    nightlife_df['name_and_location'] = nightlife_df[['name', 'location.address1']].agg(': '.join, axis=1)
+    nightlife_cosine_sim_df = pd.read_csv('data/nightlife_cosine_sim.csv', index_col='id')
+
     venue = st.selectbox(
     'Pick a venue and we will make you recommendations', nightlife_df['name_and_location'])
     nightlife_df_subset = nightlife_df[nightlife_df['name_and_location'] == venue].reset_index(drop=True)
@@ -92,8 +87,18 @@ if venue_type == 'Nightlife':
     recs = recs.to_html(escape=False)
     st.write(recs, unsafe_allow_html=True)
 
+    del nightlife_df, nightlife_cosine_sim_df
+    gc.collect()
+
 #If restaurant
 if venue_type == 'Restaurants': 
+
+    restaurants_df= pd.read_csv('data/restaurants.csv', index_col='Unnamed: 0')
+    restaurants_df['name'] = restaurants_df['name'].astype(str)
+    restaurants_df['location.address1'] = restaurants_df['location.address1'].astype(str)
+    restaurants_df['name_and_location'] = restaurants_df[['name', 'location.address1']].agg(': '.join, axis=1)
+    restaurant_cosine_sim_df = pd.read_csv('data/restaurant_cosine_sim.csv', index_col='id')
+
     venue = st.selectbox(
     'Pick a venue and we will make you recommendations', restaurants_df['name_and_location'])
     restaurants_df_subset = restaurants_df[restaurants_df['name_and_location'] == venue].reset_index(drop=True)
@@ -105,8 +110,18 @@ if venue_type == 'Restaurants':
     recs = recs.to_html(escape=False)
     st.write(recs, unsafe_allow_html=True)
 
+    del restaurants_df, restaurant_cosine_sim_df
+    gc.collect()
+
 #If coffee shop
 if venue_type == 'Coffee Shops': 
+
+    coffee_df= pd.read_csv('data/coffee.csv', index_col='Unnamed: 0')
+    coffee_df['name'] = coffee_df['name'].astype(str)
+    coffee_df['location.address1'] = coffee_df['location.address1'].astype(str)
+    coffee_df['name_and_location'] = coffee_df[['name', 'location.address1']].agg(': '.join, axis=1)
+    coffee_cosine_sim_df = pd.read_csv('data/coffee_cosine_sim.csv', index_col='id')
+
     venue = st.selectbox(
     'Pick a venue and we will make you recommendations', coffee_df['name_and_location'])
     coffee_df_subset = coffee_df[coffee_df['name_and_location'] == venue].reset_index(drop=True)
@@ -117,6 +132,9 @@ if venue_type == 'Coffee Shops':
     recs['url'] = recs['url'].apply(make_clickable)
     recs = recs.to_html(escape=False)
     st.write(recs, unsafe_allow_html=True)
+
+    del coffee_df, coffee_cosine_sim_df
+    gc.collect()
 
 
 # option = st.selectbox('Pick one of your favorite places. We will find more just like it',
