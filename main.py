@@ -87,7 +87,7 @@ if venue_type == 'Nightlife':
     recs = recs.to_html(escape=False)
     st.write(recs, unsafe_allow_html=True)
 
-    del nightlife_df, nightlife_cosine_sim_df
+    del nightlife_df, nightlife_cosine_sim_df, recs
     gc.collect()
 
 #If restaurant
@@ -110,7 +110,7 @@ if venue_type == 'Restaurants':
     recs = recs.to_html(escape=False)
     st.write(recs, unsafe_allow_html=True)
 
-    del restaurants_df, restaurant_cosine_sim_df
+    del restaurants_df, restaurant_cosine_sim_df, recs
     gc.collect()
 
 #If coffee shop
@@ -133,7 +133,7 @@ if venue_type == 'Coffee Shops':
     recs = recs.to_html(escape=False)
     st.write(recs, unsafe_allow_html=True)
 
-    del coffee_df, coffee_cosine_sim_df
+    del coffee_df, coffee_cosine_sim_df, recs
     gc.collect()
 
 
