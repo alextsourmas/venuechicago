@@ -59,11 +59,16 @@ def genre_recommendations(i, M, items, k=10):
     closest = closest.drop(i, errors='ignore')
     return pd.DataFrame(closest).rename(columns={0: 'id'}).merge(items).head(k)
 
+@st.cache
 def make_clickable(link):
     # target _blank to open new window
     # extract clickable text to display for your link
     text = link.split('=')[1]
     return f'<a target="_blank" href="{link}">{text}</a>'
+
+@st.cache
+def path_to_image(path):
+    return '<img src="' + path + '" width="60" >'
 
 
 #If nightlife 
@@ -85,9 +90,11 @@ if venue_type == 'Nightlife':
     nightlife_df_subset = nightlife_df[nightlife_df['name_and_location'] == venue].reset_index(drop=True)
     id = nightlife_df_subset['id'].iloc[0]
     recs = genre_recommendations(i=id, M=nightlife_cosine_sim_df, items=nightlife_df, k=15)
-    recs = recs[['name', 'url', 'review_count', 'rating', 'price', 'location.address1']]
+    recs = recs[['image_url','name', 'url', 'review_count', 'rating', 'price', 'location.address1']]
 # link is the column with hyperlinks
     recs['url'] = recs['url'].apply(make_clickable)
+    recs['image_url'] = recs['image_url'].astype(str)
+    recs['image_url'] = recs['image_url'].apply(path_to_image)
     recs = recs.to_html(escape=False)
     st.write(recs, unsafe_allow_html=True)
 
@@ -113,9 +120,11 @@ if venue_type == 'Restaurants':
     restaurants_df_subset = restaurants_df[restaurants_df['name_and_location'] == venue].reset_index(drop=True)
     id = restaurants_df_subset['id'].iloc[0]
     recs = genre_recommendations(i=id, M=restaurant_cosine_sim_df, items=restaurants_df, k=15)
-    recs = recs[['name', 'url', 'review_count', 'rating', 'price', 'location.address1']]
+    recs = recs[['image_url','name', 'url', 'review_count', 'rating', 'price', 'location.address1']]
 # link is the column with hyperlinks
     recs['url'] = recs['url'].apply(make_clickable)
+    recs['image_url'] = recs['image_url'].astype(str)
+    recs['image_url'] = recs['image_url'].apply(path_to_image)
     recs = recs.to_html(escape=False)
     st.write(recs, unsafe_allow_html=True)
 
@@ -141,9 +150,11 @@ if venue_type == 'Coffee Shops':
     coffee_df_subset = coffee_df[coffee_df['name_and_location'] == venue].reset_index(drop=True)
     id = coffee_df_subset['id'].iloc[0]
     recs = genre_recommendations(i=id, M=coffee_cosine_sim_df, items=coffee_df, k=15)
-    recs = recs[['name', 'url', 'review_count', 'rating', 'price', 'location.address1']]
+    recs = recs[['image_url','name', 'url', 'review_count', 'rating', 'price', 'location.address1']]
 # link is the column with hyperlinks
     recs['url'] = recs['url'].apply(make_clickable)
+    recs['image_url'] = recs['image_url'].astype(str)
+    recs['image_url'] = recs['image_url'].apply(path_to_image)
     recs = recs.to_html(escape=False)
     st.write(recs, unsafe_allow_html=True)
 
