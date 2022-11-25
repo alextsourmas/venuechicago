@@ -134,7 +134,7 @@ if venue_type == 'Coffee Shops':
         coffee_cosine_sim_df = pd.read_csv('data/coffee_cosine_sim.csv', index_col='id')
         return coffee_df, coffee_cosine_sim_df
 
-    coffee_df, coffee_cosine_sim_df = load_restaurant_data()
+    coffee_df, coffee_cosine_sim_df = load_coffee_data()
 
     venue = st.selectbox(
     'Pick a venue and we will make you recommendations', coffee_df['name_and_location'])
