@@ -69,12 +69,16 @@ def make_clickable(link):
 #If nightlife 
 if venue_type == 'Nightlife': 
 
-    #Edit nightlife df
-    nightlife_df= pd.read_csv('data/nightlife.csv', index_col='Unnamed: 0') #To csv 
-    nightlife_df['name'] = nightlife_df['name'].astype(str)
-    nightlife_df['location.address1'] = nightlife_df['location.address1'].astype(str)
-    nightlife_df['name_and_location'] = nightlife_df[['name', 'location.address1']].agg(': '.join, axis=1)
-    nightlife_cosine_sim_df = pd.read_csv('data/nightlife_cosine_sim.csv', index_col='id')
+    @st.cache
+    def load_nightlife_data(): 
+        nightlife_df = pd.read_csv('data/nightlife.csv', index_col='Unnamed: 0')
+        nightlife_df['name'] = nightlife_df['name'].astype(str)
+        nightlife_df['location.address1'] = nightlife_df['location.address1'].astype(str)
+        nightlife_df['name_and_location'] = nightlife_df[['name', 'location.address1']].agg(': '.join, axis=1)
+        nightlife_cosine_sim_df = pd.read_csv('data/nightlife_cosine_sim.csv', index_col='id')
+        return nightlife_df, nightlife_cosine_sim_df
+
+    nightlife_df, nightlife_cosine_sim_df = load_nightlife_data()
 
     venue = st.selectbox(
     'Pick a venue and we will make you recommendations', nightlife_df['name_and_location'])
@@ -93,11 +97,16 @@ if venue_type == 'Nightlife':
 #If restaurant
 if venue_type == 'Restaurants': 
 
-    restaurants_df= pd.read_csv('data/restaurants.csv', index_col='Unnamed: 0')
-    restaurants_df['name'] = restaurants_df['name'].astype(str)
-    restaurants_df['location.address1'] = restaurants_df['location.address1'].astype(str)
-    restaurants_df['name_and_location'] = restaurants_df[['name', 'location.address1']].agg(': '.join, axis=1)
-    restaurant_cosine_sim_df = pd.read_csv('data/restaurant_cosine_sim.csv', index_col='id')
+    @st.cache
+    def load_restaurant_data(): 
+        restaurants_df= pd.read_csv('data/restaurants.csv', index_col='Unnamed: 0')
+        restaurants_df['name'] = restaurants_df['name'].astype(str)
+        restaurants_df['location.address1'] = restaurants_df['location.address1'].astype(str)
+        restaurants_df['name_and_location'] = restaurants_df[['name', 'location.address1']].agg(': '.join, axis=1)
+        restaurant_cosine_sim_df = pd.read_csv('data/restaurant_cosine_sim.csv', index_col='id')
+        return restaurants_df, restaurant_cosine_sim_df
+
+    restaurants_df, restaurant_cosine_sim_df = load_restaurant_data()
 
     venue = st.selectbox(
     'Pick a venue and we will make you recommendations', restaurants_df['name_and_location'])
@@ -116,11 +125,16 @@ if venue_type == 'Restaurants':
 #If coffee shop
 if venue_type == 'Coffee Shops': 
 
-    coffee_df= pd.read_csv('data/coffee.csv', index_col='Unnamed: 0')
-    coffee_df['name'] = coffee_df['name'].astype(str)
-    coffee_df['location.address1'] = coffee_df['location.address1'].astype(str)
-    coffee_df['name_and_location'] = coffee_df[['name', 'location.address1']].agg(': '.join, axis=1)
-    coffee_cosine_sim_df = pd.read_csv('data/coffee_cosine_sim.csv', index_col='id')
+    @st.cache
+    def load_coffee_data(): 
+        coffee_df= pd.read_csv('data/coffee.csv', index_col='Unnamed: 0')
+        coffee_df['name'] = coffee_df['name'].astype(str)
+        coffee_df['location.address1'] = coffee_df['location.address1'].astype(str)
+        coffee_df['name_and_location'] = coffee_df[['name', 'location.address1']].agg(': '.join, axis=1)
+        coffee_cosine_sim_df = pd.read_csv('data/coffee_cosine_sim.csv', index_col='id')
+        return coffee_df, coffee_cosine_sim_df
+
+    coffee_df, coffee_cosine_sim_df = load_restaurant_data()
 
     venue = st.selectbox(
     'Pick a venue and we will make you recommendations', coffee_df['name_and_location'])
